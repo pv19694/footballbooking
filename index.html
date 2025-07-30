@@ -2,167 +2,127 @@
 <html lang="th">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>จองสนามฟุตบอล Jakhong</title>
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans&display=swap" rel="stylesheet">
   <style>
     body {
-      margin: 0;
       font-family: 'IBM Plex Sans', sans-serif;
-      background-color: #f9f9f9;
+      background-color: #f7f7f7;
+      margin: 0;
+      padding: 0;
     }
-    header {
-      background: linear-gradient(90deg, #085c4f, #0d7362);
-      color: white;
+    .header {
+      background: linear-gradient(90deg, #004d40, #00695c);
       padding: 1rem;
+      color: white;
       text-align: center;
       font-size: 1.5rem;
       font-weight: bold;
-      border-bottom-left-radius: 12px;
-      border-bottom-right-radius: 12px;
+      border-bottom-left-radius: 20px;
+      border-bottom-right-radius: 20px;
     }
     .container {
-      padding: 1rem;
       max-width: 600px;
       margin: auto;
+      padding: 1rem;
     }
-    select, button {
-      font-family: 'IBM Plex Sans', sans-serif;
-      font-size: 1rem;
-      padding: 0.5rem;
-      border-radius: 8px;
-      border: 1px solid #ccc;
+    label {
+      font-weight: bold;
+      display: block;
+      margin-bottom: 0.5rem;
+    }
+    select, input[type="date"] {
       width: 100%;
+      padding: 0.6rem;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      font-size: 1rem;
       margin-bottom: 1rem;
+      background-color: white;
+      color: #333;
     }
-    .date-controls {
+    .nav-row {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      background-color: #eee;
-      padding: 0.75rem 1rem;
+      background: #f1f1f1;
+      padding: 1rem;
       border-radius: 10px;
       margin-bottom: 1rem;
     }
-    .date-controls button {
-      background-color: #0d7362;
+    .btn {
+      background: #00695c;
       color: white;
       border: none;
       padding: 0.5rem 1rem;
-      border-radius: 8px;
+      border-radius: 10px;
+      font-size: 1rem;
       cursor: pointer;
     }
-    .date-controls .date {
-      font-weight: bold;
-      font-size: 1.1rem;
-    }
-    .booking {
-      border-radius: 10px;
-      margin-bottom: 0.75rem;
-      padding: 0.75rem 1rem;
+    .slot {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      font-size: 1rem;
+      padding: 0.8rem;
+      margin-bottom: 0.6rem;
+      border-radius: 10px;
+      font-size: 1.1rem;
+      background-color: white;
+      border: 1px solid #ddd;
     }
-    .available {
-      background-color: #ffffff;
-      color: green;
-      border: 1px solid #cfcfcf;
+    .slot-booked {
+      background-color: #ffcdd2;
+      color: #b71c1c;
     }
-    .booked {
-      background-color: #f7c3c3;
-      color: #991111;
-    }
-    .calendar {
-      margin-bottom: 1rem;
-      text-align: center;
-    }
-    .calendar input[type="date"] {
-      padding: 0.5rem;
-      font-size: 1rem;
-      border-radius: 8px;
-      border: 1px solid #ccc;
-      width: 100%;
+    .slot-available {
+      background-color: white;
+      color: #2e7d32;
     }
   </style>
 </head>
 <body>
-  <header>จองสนามฟุตบอล Jakhong</header>
+  <div class="header">จองสนามฟุตบอล Jakhong</div>
   <div class="container">
     <label for="field">เลือกสนาม:</label>
     <select id="field">
       <option>สนามหญ้าจริง</option>
-      <option>สนามหญ้าเทียม</option>
+      <option>สนามในร่ม</option>
     </select>
 
-    <div class="calendar">
-      <input type="date" id="calendarDate" />
+    <input type="date" id="datePicker" value="2025-07-30" />
+
+    <div class="nav-row">
+      <button class="btn">&#8592; ก่อนหน้า</button>
+      <div><strong>วันพุธที่ 30 กรกฎาคม 2568</strong></div>
+      <button class="btn">ถัดไป &#8594;</button>
     </div>
 
-    <div class="date-controls">
-      <button onclick="changeDate(-1)">← ก่อนหน้า</button>
-      <div class="date" id="displayDate">กำลังโหลด...</div>
-      <button onclick="changeDate(1)">ถัดไป →</button>
+    <!-- ตารางช่วงเวลาแบบตัวอย่าง -->
+    <div class="slot slot-booked">
+      <span>15:00 - 16:00</span>
+      <span>แพน</span>
     </div>
-
-    <div id="bookingList"></div>
+    <div class="slot slot-available">
+      <span>16:00 - 17:00</span>
+      <span>ว่าง</span>
+    </div>
+    <div class="slot slot-available">
+      <span>17:00 - 18:00</span>
+      <span>ว่าง</span>
+    </div>
+    <div class="slot slot-available">
+      <span>18:00 - 19:00</span>
+      <span>ว่าง</span>
+    </div>
+    <div class="slot slot-available">
+      <span>19:00 - 20:00</span>
+      <span>ว่าง</span>
+    </div>
+    <div class="slot slot-available">
+      <span>20:00 - 21:00</span>
+      <span>ว่าง</span>
+    </div>
   </div>
-
-  <script>
-    const bookingList = document.getElementById('bookingList');
-    const displayDate = document.getElementById('displayDate');
-    const calendarInput = document.getElementById('calendarDate');
-
-    const bookedSlots = {
-      '2025-07-30': ['15:00 - 16:00']
-    };
-
-    let currentDate = new Date();
-
-    function formatDate(date) {
-      return date.toLocaleDateString('th-TH', {
-        weekday: 'long', day: 'numeric', month: 'long', year: 'numeric'
-      });
-    }
-
-    function formatInputDate(date) {
-      return date.toISOString().split('T')[0];
-    }
-
-    function renderBookingList(date) {
-      const dateKey = formatInputDate(date);
-      const reserved = bookedSlots[dateKey] || [];
-      bookingList.innerHTML = '';
-
-      const startHour = 15;
-      const endHour = 2;
-      for (let hour = startHour; hour !== endHour; hour = (hour + 1) % 24) {
-        const nextHour = (hour + 1) % 24;
-        const label = `${String(hour).padStart(2, '0')}:00 - ${String(nextHour).padStart(2, '0')}:00`;
-        const div = document.createElement('div');
-        div.className = 'booking ' + (reserved.includes(label) ? 'booked' : 'available');
-        div.innerHTML = `<span>${label}</span><span>${reserved.includes(label) ? 'แพน' : 'ว่าง'}</span>`;
-        bookingList.appendChild(div);
-      }
-
-      displayDate.textContent = formatDate(date);
-      calendarInput.value = formatInputDate(date);
-    }
-
-    function changeDate(days) {
-      currentDate.setDate(currentDate.getDate() + days);
-      renderBookingList(currentDate);
-    }
-
-    calendarInput.addEventListener('change', (e) => {
-      currentDate = new Date(e.target.value);
-      renderBookingList(currentDate);
-    });
-
-    window.onload = () => {
-      renderBookingList(currentDate);
-    };
-  </script>
 </body>
 </html>
