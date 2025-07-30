@@ -1,128 +1,97 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>จองสนามฟุตบอล Jakhong</title>
+  <meta charset="UTF-8">
+  <title>จองสนามฟุตบอล</title>
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans&display=swap" rel="stylesheet">
   <style>
     body {
       font-family: 'IBM Plex Sans', sans-serif;
       background-color: #f7f7f7;
       margin: 0;
-      padding: 0;
+      padding: 20px;
     }
-    .header {
-      background: linear-gradient(90deg, #004d40, #00695c);
-      padding: 1rem;
-      color: white;
+    h1 {
       text-align: center;
-      font-size: 1.5rem;
-      font-weight: bold;
-      border-bottom-left-radius: 20px;
-      border-bottom-right-radius: 20px;
-    }
-    .container {
-      max-width: 600px;
-      margin: auto;
-      padding: 1rem;
-    }
-    label {
-      font-weight: bold;
-      display: block;
-      margin-bottom: 0.5rem;
+      color: #034732;
     }
     select, input[type="date"] {
       width: 100%;
-      padding: 0.6rem;
-      border: 1px solid #ccc;
-      border-radius: 10px;
-      font-size: 1rem;
-      margin-bottom: 1rem;
-      background-color: white;
-      color: #333;
-    }
-    .nav-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background: #f1f1f1;
-      padding: 1rem;
-      border-radius: 10px;
-      margin-bottom: 1rem;
-    }
-    .btn {
-      background: #00695c;
-      color: white;
-      border: none;
-      padding: 0.5rem 1rem;
-      border-radius: 10px;
-      font-size: 1rem;
-      cursor: pointer;
+      padding: 10px;
+      margin: 10px 0;
+      font-size: 16px;
     }
     .slot {
+      border: 1px solid #ccc;
+      padding: 15px;
+      margin: 10px 0;
+      border-radius: 8px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 0.8rem;
-      margin-bottom: 0.6rem;
-      border-radius: 10px;
-      font-size: 1.1rem;
       background-color: white;
-      border: 1px solid #ddd;
+      cursor: pointer;
+      transition: 0.2s;
     }
-    .slot-booked {
-      background-color: #ffcdd2;
-      color: #b71c1c;
+    .slot.booked {
+      background-color: #f8d7da;
+      color: #721c24;
+      cursor: not-allowed;
     }
-    .slot-available {
-      background-color: white;
-      color: #2e7d32;
+    .slot:hover {
+      background-color: #e9ecef;
     }
   </style>
 </head>
 <body>
-  <div class="header">จองสนามฟุตบอล Jakhong</div>
-  <div class="container">
-    <label for="field">เลือกสนาม:</label>
-    <select id="field">
-      <option>สนามหญ้าจริง</option>
-      <option>สนามในร่ม</option>
-    </select>
 
-    <input type="date" id="datePicker" value="2025-07-30" />
+<h1>จองสนามฟุตบอล Jakhong</h1>
 
-    <div class="nav-row">
-      <button class="btn">&#8592; ก่อนหน้า</button>
-      <div><strong>วันพุธที่ 30 กรกฎาคม 2568</strong></div>
-      <button class="btn">ถัดไป &#8594;</button>
-    </div>
+<label for="field">เลือกสนาม:</label>
+<select id="field">
+  <option>สนามหญ้าจริง</option>
+  <option>สนามหญ้าเทียม</option>
+  <option>สนามด้านหลัง</option>
+</select>
 
-    <!-- ตารางช่วงเวลาแบบตัวอย่าง -->
-    <div class="slot slot-booked">
-      <span>15:00 - 16:00</span>
-      <span>แพน</span>
-    </div>
-    <div class="slot slot-available">
-      <span>16:00 - 17:00</span>
-      <span>ว่าง</span>
-    </div>
-    <div class="slot slot-available">
-      <span>17:00 - 18:00</span>
-      <span>ว่าง</span>
-    </div>
-    <div class="slot slot-available">
-      <span>18:00 - 19:00</span>
-      <span>ว่าง</span>
-    </div>
-    <div class="slot slot-available">
-      <span>19:00 - 20:00</span>
-      <span>ว่าง</span>
-    </div>
-    <div class="slot slot-available">
-      <span>20:00 - 21:00</span>
-      <span>ว่าง</span>
-    </div>
-  </div>
+<label for="date">เลือกวันที่:</label>
+<input type="date" id="date">
+
+<div id="timeslots"></div>
+
+<script>
+  const times = [
+    "15:00 - 16:00", "16:00 - 17:00", "17:00 - 18:00",
+    "18:00 - 19:00", "19:00 - 20:00", "20:00 - 21:00",
+    "21:00 - 22:00", "22:00 - 23:00", "23:00 - 00:00",
+    "00:00 - 01:00", "01:00 - 02:00"
+  ];
+
+  const slotsContainer = document.getElementById('timeslots');
+
+  function renderSlots() {
+    slotsContainer.innerHTML = '';
+    times.forEach(time => {
+      const div = document.createElement('div');
+      div.className = 'slot';
+      div.textContent = time;
+      div.onclick = function () {
+        if (div.classList.contains('booked')) {
+          alert("ช่วงเวลานี้ถูกจองแล้ว");
+        } else {
+          const name = prompt(`ใครจองช่วงเวลา ${time}?`);
+          if (name) {
+            div.classList.add('booked');
+            div.textContent = `${time} - ${name}`;
+          }
+        }
+      };
+      slotsContainer.appendChild(div);
+    });
+  }
+
+  renderSlots();
+</script>
+
 </body>
 </html>
