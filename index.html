@@ -15,16 +15,29 @@
 
     .container {
       background: white;
-      max-width: 400px;
+      max-width: 430px;
       margin: auto;
       padding: 25px;
       border-radius: 20px;
-      box-shadow: 0 0 15px rgba(0,0,0,0.1);
+      box-shadow: 0 0 20px rgba(0,0,0,0.1);
     }
 
-    h2 {
-      margin-bottom: 20px;
-      color: #1b4332;
+    .header-box {
+      background-color: #d8f3dc;
+      padding: 15px 10px;
+      margin-bottom: 25px;
+      border-radius: 15px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+
+    .header-box h2 {
+      margin: 0;
+      font-size: 24px;
+      color: #000;
+    }
+
+    .header-box span {
+      color: #2d6a4f;
     }
 
     label {
@@ -38,12 +51,15 @@
 
     select, input[type="date"] {
       width: 100%;
+      max-width: 100%;
+      box-sizing: border-box;
       padding: 12px;
       font-size: 16px;
       color: #000;
       border: 1px solid #ccc;
       border-radius: 10px;
       margin-top: 5px;
+      appearance: none;
     }
 
     .timeslot {
@@ -89,7 +105,9 @@
 <body>
 
   <div class="container">
-    <h2>จองสนามฟุตบอล <span style="color: #2d6a4f;">Jakhong</span></h2>
+    <div class="header-box">
+      <h2>จองสนามฟุตบอล <span>Jakhong</span></h2>
+    </div>
 
     <label for="field">เลือกสนาม:</label>
     <select id="field" style="font-size:18px; color:#000;">
@@ -111,22 +129,14 @@
     const selectedDateText = document.getElementById("selected-date");
 
     const timeSlots = [
-      "15:00 - 16:00",
-      "16:00 - 17:00",
-      "17:00 - 18:00",
-      "18:00 - 19:00",
-      "19:00 - 20:00",
-      "20:00 - 21:00",
-      "21:00 - 22:00",
-      "22:00 - 23:00",
-      "23:00 - 00:00",
-      "00:00 - 01:00",
-      "01:00 - 02:00"
+      "15:00 - 16:00", "16:00 - 17:00", "17:00 - 18:00",
+      "18:00 - 19:00", "19:00 - 20:00", "20:00 - 21:00",
+      "21:00 - 22:00", "22:00 - 23:00", "23:00 - 00:00",
+      "00:00 - 01:00", "01:00 - 02:00"
     ];
 
-    const bookings = {}; // จองไว้ใน memory เท่านั้น
+    const bookings = {}; // จองไว้ใน memory
 
-    // ตั้งค่าวันที่วันนี้เป็นค่า default
     const today = new Date();
     const isoDate = today.toISOString().split('T')[0];
     dateInput.value = isoDate;
@@ -140,9 +150,10 @@
     });
 
     function updateDateTitle(date) {
-      const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-      const thaiDate = new Intl.DateTimeFormat('th-TH', options).format(date);
-      selectedDateText.innerText = `วัน${thaiDate}`;
+      const day = String(date.getDate()).padStart(2, '0');
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const year = date.getFullYear() + 543;
+      selectedDateText.innerText = `วันที่ ${day}/${month}/${year}`;
     }
 
     function renderTimeSlots() {
@@ -170,12 +181,18 @@
         slot.appendChild(status);
 
         slot.addEventListener("click", () => {
-          if (bookings[key][time]) return; // จองแล้ว
-
-          const name = prompt("กรุณากรอกชื่อผู้จอง:");
-          if (name) {
-            bookings[key][time] = name;
-            renderTimeSlots(); // รีเฟรชใหม่
+          if (bookings[key][time]) {
+            const confirmCancel = confirm(`ยกเลิกการจอง: ${bookings[key][time]}?`);
+            if (confirmCancel) {
+              delete bookings[key][time];
+              renderTimeSlots();
+            }
+          } else {
+            const name = prompt("กรุณากรอกชื่อผู้จอง:");
+            if (name) {
+              bookings[key][time] = name;
+              renderTimeSlots();
+            }
           }
         });
 
