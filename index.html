@@ -2,96 +2,190 @@
 <html lang="th">
 <head>
   <meta charset="UTF-8">
-  <title>จองสนามฟุตบอล</title>
+  <title>จองสนามฟุตบอล Jakhong</title>
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans&display=swap" rel="stylesheet">
   <style>
     body {
       font-family: 'IBM Plex Sans', sans-serif;
-      background-color: #f7f7f7;
+      background-color: #f0f2f5;
       margin: 0;
       padding: 20px;
-    }
-    h1 {
       text-align: center;
-      color: #034732;
     }
+
+    .container {
+      background: white;
+      max-width: 400px;
+      margin: auto;
+      padding: 25px;
+      border-radius: 20px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.1);
+    }
+
+    h2 {
+      margin-bottom: 20px;
+      color: #1b4332;
+    }
+
+    label {
+      display: block;
+      text-align: left;
+      margin-top: 15px;
+      font-weight: bold;
+      font-size: 16px;
+      color: #000;
+    }
+
     select, input[type="date"] {
       width: 100%;
-      padding: 10px;
-      margin: 10px 0;
+      padding: 12px;
       font-size: 16px;
-    }
-    .slot {
+      color: #000;
       border: 1px solid #ccc;
-      padding: 15px;
-      margin: 10px 0;
-      border-radius: 8px;
+      border-radius: 10px;
+      margin-top: 5px;
+    }
+
+    .timeslot {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      background-color: white;
+      background: white;
+      border: 1px solid #ccc;
+      padding: 10px 15px;
+      margin: 5px 0;
+      border-radius: 10px;
       cursor: pointer;
-      transition: 0.2s;
+      transition: background 0.2s ease-in-out;
     }
-    .slot.booked {
-      background-color: #f8d7da;
+
+    .timeslot:hover {
+      background: #e9ecef;
+    }
+
+    .booked {
+      background-color: #f8d7da !important;
       color: #721c24;
-      cursor: not-allowed;
+      font-weight: bold;
     }
-    .slot:hover {
-      background-color: #e9ecef;
+
+    .status {
+      color: green;
+      font-weight: bold;
+    }
+
+    .booked .status {
+      color: red;
+    }
+
+    .date-title {
+      margin-top: 25px;
+      font-weight: bold;
+      font-size: 18px;
+      color: #1b4332;
     }
   </style>
 </head>
 <body>
 
-<h1>จองสนามฟุตบอล Jakhong</h1>
+  <div class="container">
+    <h2>จองสนามฟุตบอล <span style="color: #2d6a4f;">Jakhong</span></h2>
 
-<label for="field">เลือกสนาม:</label>
-<select id="field">
-  <option>สนามหญ้าจริง</option>
-  <option>สนามหญ้าเทียม</option>
-  <option>สนามด้านหลัง</option>
-</select>
+    <label for="field">เลือกสนาม:</label>
+    <select id="field" style="font-size:18px; color:#000;">
+      <option>สนามหญ้าจริง</option>
+      <option>สนามหญ้าเทียม</option>
+      <option>สนามด้านหลัง</option>
+    </select>
 
-<label for="date">เลือกวันที่:</label>
-<input type="date" id="date">
+    <label for="date">เลือกวันที่:</label>
+    <input type="date" id="date" style="font-size:18px; color:#000;" />
 
-<div id="timeslots"></div>
+    <div id="selected-date" class="date-title"></div>
+    <div id="timeslots"></div>
+  </div>
 
-<script>
-  const times = [
-    "15:00 - 16:00", "16:00 - 17:00", "17:00 - 18:00",
-    "18:00 - 19:00", "19:00 - 20:00", "20:00 - 21:00",
-    "21:00 - 22:00", "22:00 - 23:00", "23:00 - 00:00",
-    "00:00 - 01:00", "01:00 - 02:00"
-  ];
+  <script>
+    const dateInput = document.getElementById("date");
+    const timeslotsContainer = document.getElementById("timeslots");
+    const selectedDateText = document.getElementById("selected-date");
 
-  const slotsContainer = document.getElementById('timeslots');
+    const timeSlots = [
+      "15:00 - 16:00",
+      "16:00 - 17:00",
+      "17:00 - 18:00",
+      "18:00 - 19:00",
+      "19:00 - 20:00",
+      "20:00 - 21:00",
+      "21:00 - 22:00",
+      "22:00 - 23:00",
+      "23:00 - 00:00",
+      "00:00 - 01:00",
+      "01:00 - 02:00"
+    ];
 
-  function renderSlots() {
-    slotsContainer.innerHTML = '';
-    times.forEach(time => {
-      const div = document.createElement('div');
-      div.className = 'slot';
-      div.textContent = time;
-      div.onclick = function () {
-        if (div.classList.contains('booked')) {
-          alert("ช่วงเวลานี้ถูกจองแล้ว");
-        } else {
-          const name = prompt(`ใครจองช่วงเวลา ${time}?`);
-          if (name) {
-            div.classList.add('booked');
-            div.textContent = `${time} - ${name}`;
-          }
-        }
-      };
-      slotsContainer.appendChild(div);
+    const bookings = {}; // จองไว้ใน memory เท่านั้น
+
+    // ตั้งค่าวันที่วันนี้เป็นค่า default
+    const today = new Date();
+    const isoDate = today.toISOString().split('T')[0];
+    dateInput.value = isoDate;
+    updateDateTitle(today);
+    renderTimeSlots();
+
+    dateInput.addEventListener("change", () => {
+      const selected = new Date(dateInput.value);
+      updateDateTitle(selected);
+      renderTimeSlots();
     });
-  }
 
-  renderSlots();
-</script>
+    function updateDateTitle(date) {
+      const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+      const thaiDate = new Intl.DateTimeFormat('th-TH', options).format(date);
+      selectedDateText.innerText = `วัน${thaiDate}`;
+    }
 
+    function renderTimeSlots() {
+      timeslotsContainer.innerHTML = "";
+      const selectedDate = dateInput.value;
+      const field = document.getElementById("field").value;
+      const key = selectedDate + "_" + field;
+
+      if (!bookings[key]) bookings[key] = {};
+
+      timeSlots.forEach(time => {
+        const slot = document.createElement("div");
+        slot.className = "timeslot";
+        const isBooked = bookings[key][time];
+        if (isBooked) slot.classList.add("booked");
+
+        const label = document.createElement("span");
+        label.textContent = time;
+
+        const status = document.createElement("span");
+        status.className = "status";
+        status.textContent = isBooked ? bookings[key][time] : "ว่าง";
+
+        slot.appendChild(label);
+        slot.appendChild(status);
+
+        slot.addEventListener("click", () => {
+          if (bookings[key][time]) return; // จองแล้ว
+
+          const name = prompt("กรุณากรอกชื่อผู้จอง:");
+          if (name) {
+            bookings[key][time] = name;
+            renderTimeSlots(); // รีเฟรชใหม่
+          }
+        });
+
+        timeslotsContainer.appendChild(slot);
+      });
+    }
+
+    document.getElementById("field").addEventListener("change", () => {
+      renderTimeSlots();
+    });
+  </script>
 </body>
 </html>
